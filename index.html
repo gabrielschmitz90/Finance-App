@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance App - Seu Controle</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <header>
+        <h1>Finance App</h1>
+        <p>Seu controle financeiro pessoal</p>
+    </header>
+
+    <!-- Theme toggle moved outside the header so it doesn't sit inside the title area -->
+    <button id="theme-toggle" aria-label="Alternar tema" title="Alternar tema" class="theme-toggle">
+        <span id="theme-icon" aria-hidden="true"></span>
+    </button>
+    <!-- container principal: todos os blocos organizados dentro -->
+    <div class="container">
+        <div class="panel" id="financial-health" aria-live="polite">
+            <!-- filled by script: status message and hint -->
+            <div class="health-content">
+                <strong>Saúde financeira:</strong>
+                <span id="health-message">Carregando...</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Adicionar Nova Transação</h2>
+            <form id="transaction-form">
+                <div class="form-control">
+                    <label for="text">Descrição:</label>
+                    <input type="text" id="text" placeholder="Ex: Salário, Aluguel" required>
+                </div>
+
+                <div class="form-control">
+                    <label for="amount">Valor: <br> (positivo para receita, negativo para despesa)</label>
+                    <input type="number" id="amount" placeholder="Ex: 3000 ou -150" step="0.01" required>
+                </div>
+
+                <div class="form-control">
+                    <label for="date-input">Data da Transação:</label>
+                    <input type="date" id="date-input" required>
+                </div>
+
+                <div class="form-control">
+                    <label for="category-select">Categoria:</label>
+                    <select id="category-select" required>
+                        <option value="" disabled selected>Selecione uma categoria</option>
+                        <option value="alimentacao">Alimentação</option>
+                        <option value="transporte">Transporte</option>
+                        <option value="moradia">Moradia</option>
+                        <option value="lazer">Lazer</option>
+                        <option value="saude">Saúde</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="form-control">
+                    <label for="payment-method">Tipo de Pagamento (opcional):</label>
+                    <select id="payment-method">
+                        <option value="" selected>—</option>
+                        <option value="cartao">Cartão de Crédito</option>
+                        <option value="dinheiro">Dinheiro</option>
+                        <option value="pix">PIX</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Adicionar</button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <section class="summary">
+                <div class="card income">
+                    <h3>Receitas</h3>
+                    <p id="total-income">R$ 0,00</p>
+                </div>
+                <div class="card expense">
+                    <h3>Despesas</h3>
+                    <p id="total-expense">R$ 0,00</p>
+                </div>
+                <div class="card invested">
+                    <h3>Investido</h3>
+                    <p id="total-invested">R$ 0,00</p>
+                </div>
+                <div class="card balance">
+                    <h3>Saldo Atual</h3>
+                    <p id="current-balance">R$ 0,00</p>
+                </div>
+            </section>
+        </div>
+
+        <div class="panel panel--compact">
+            <h3>Visão rápida — Categorias (Despesas)</h3>
+            <canvas id="category-chart"></canvas>
+        </div>
+
+        
+        <section class="history">
+            <h2>Histórico</h2>
+            <ul id="transaction-list" class="list">
+            </ul>
+        </section>
+
+        <!-- Export/QR controls moved to the end of the container -->
+        <div class="panel controls-row" style="justify-content:flex-end;gap:12px;">
+            <button id="export-csv" class="btn">Exportar CSV</button>
+            <button id="generate-qr" class="btn">Gerar QR (JSON)</button>
+            <div id="qr-container" aria-hidden="true" style="display:inline-block;margin-left:12px;vertical-align:middle"></div>
+        </div>
+        <div class="panel invest-panel" style="display:flex;gap:12px;align-items:center;justify-content:flex-end;flex-wrap:wrap;">
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input id="invest-amount" type="number" placeholder="Valor para investir (ou vazio = restante)" style="max-width:260px;padding:8px 10px;border-radius:8px;border:1px solid #e6e9ef;background:#fff;color:#081029" />
+                <button id="invest-btn" class="btn">Investir restante</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <input id="rescue-amount" type="number" placeholder="Valor para resgatar (ou vazio = máximo)" style="max-width:260px;padding:8px 10px;border-radius:8px;border:1px solid #e6e9ef;background:#fff;color:#081029" />
+                <button id="rescue-btn" class="btn">Resgatar</button>
+                <button id="rescue-all-btn" class="btn" style="background:#ef4444;border:0;padding:10px 14px;border-radius:10px;color:#fff;">Resgatar tudo</button>
+            </div>
+            <div id="invest-info" style="margin-left:12px;color:var(--muted);font-size:0.95rem"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

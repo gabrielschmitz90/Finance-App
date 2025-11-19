@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+:root{
+    --bg-start: #0f172a;
+    --bg-end: #0b1220;
+    --card-bg: #ffffff;
+    --muted: #475569; /* aumentado contraste */
+    --primary: #4f46e5;
+    --success: #16a34a;
+    --danger: #ef4444;
+    --glass: rgba(255,255,255,0.06);
+}
+
+/* Light mode overrides: apply by adding class `light-mode` to <body> */
+body.light-mode{
+    --bg-start: #f5f7fb;
+    --bg-end: #eef2ff;
+    --card-bg: #ffffff;
+    --muted: #51616a;
+    --primary: #4f46e5;
+    --success: #16a34a;
+    --danger: #ef4444;
+    background: linear-gradient(180deg,var(--bg-start),var(--bg-end));
+}
+
+*{box-sizing: border-box;margin:0;padding:0}
+
+body{
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    color: #0f172a;
+    background: linear-gradient(180deg,var(--bg-start) 0%, var(--bg-end) 100%);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    min-height:100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px;
+}
+
+/* allow absolutely-positioned top controls to be placed relative to the page */
+body{position:relative}
+
+/* smoother color transitions when switching theme */
+body, .panel, .card, .btn, input, select{
+    transition: background-color 220ms ease, color 220ms ease, box-shadow 220ms ease, border-color 220ms ease, transform 160ms ease;
+}
+
+header{
+    text-align:center;
+    color: white;
+    margin-bottom: 18px;
+}
+
+/* header should switch color in light mode so text remains readable */
+.light-mode header{ color: #081029 }
+
+/* make header a positioned container so absolute children (theme button) sit correctly */
+header{position:relative}
+
+header h1{font-size:1.6rem;letter-spacing:0.3px}
+header p{color:rgba(255,255,255,0.95);margin-top:6px;font-size:0.95rem}
+
+
+.container{
+    width:calc(100% - 32px);
+    max-width:920px;
+    margin: 24px auto; /* espaço padrão (não centralizar verticalmente) */
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,250,250,0.98));
+    color: #081029; /* garante bom contraste do texto dentro do painel */
+    border-radius:16px;
+    padding:24px;
+    box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+    transition: transform 240ms ease, box-shadow 240ms ease;
+}
+
+.container:hover{transform:translateY(-3px)}
+
+/* Top controls layout */
+.top-controls{width:100%;display:flex;justify-content:center;margin-top:8px;margin-bottom:6px}
+.top-controls .panel{max-width:920px;width:100%}
+
+/* Top summary (cards) styling — sits above the chart */
+.top-summary{width:100%;display:flex;justify-content:center;margin-top:14px}
+.top-summary .container-inner{max-width:920px;width:100%;padding:0 24px}
+.top-summary .summary{margin:0 0 8px 0}
+.summary{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.card{flex:1 1 180px;background:linear-gradient(180deg,#ffffff,#fbfbff);padding:16px;border-radius:12px;text-align:center;box-shadow:0 6px 18px rgba(15,23,42,0.06);transition:transform 180ms ease, box-shadow 180ms}
+.card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(15,23,42,0.12)}
+
+.card h3{font-size:0.95rem;color:var(--muted);margin-bottom:8px;font-weight:600}
+.card p{font-size:1.25rem;font-weight:700;color:#081029}
+
+.card.invested h3{color:#0b6b5a}
+.card.invested p{color:var(--primary);font-weight:700}
+
+.income{border-left:6px solid var(--success)}
+.expense{border-left:6px solid var(--danger)}
+.balance{border-left:6px solid var(--primary)}
+
+.new-transaction, .history{background:transparent;padding:0;margin-bottom:0}
+
+.panel{background:var(--card-bg);padding:20px;border-radius:12px;box-shadow:0 8px 20px rgba(2,6,23,0.08);margin-bottom:20px}
+
+/* Ensure panels are visually separated and consistent */
+.panel + .panel{margin-top:12px}
+.panel h2, .panel h3{margin:0 0 12px 0;color:#0b1220}
+.container{padding:18px}
+
+/* Compact chart panel */
+.panel--compact{padding:12px 14px}
+.panel--compact h3{font-size:1rem;margin-bottom:8px}
+.panel--compact canvas{width:100%;height:180px;max-height:240px;display:block}
+
+@media (max-width:720px){
+    .panel--compact canvas{height:140px}
+}
+
+/* Financial health panel */
+#financial-health{display:flex;align-items:center;justify-content:flex-start;padding:14px;border-left:6px solid transparent}
+#financial-health .health-content{display:flex;flex-direction:column;gap:6px}
+#financial-health.good{border-left-color:var(--success);background:linear-gradient(180deg, rgba(16,185,129,0.03), rgba(16,185,129,0.01))}
+#financial-health.warn{border-left-color:#f59e0b;background:linear-gradient(180deg, rgba(245,158,11,0.03), rgba(245,158,11,0.01))}
+#financial-health.bad{border-left-color:var(--danger);background:linear-gradient(180deg, rgba(239,68,68,0.03), rgba(239,68,68,0.01))}
+
+/* Theme toggle button */
+.theme-toggle{position:absolute;right:18px;top:18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);color:#fff;font-size:18px;cursor:pointer;padding:8px;border-radius:10px;display:flex;align-items:center;justify-content:center;z-index:60}
+.theme-toggle:hover{transform:translateY(-2px);opacity:0.98}
+.theme-toggle svg{display:block;width:18px;height:18px}
+.light-mode .theme-toggle{color:#0b1220;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.06)}
+
+.form-control{margin:10px 0}
+.form-control label{display:block;margin-bottom:6px;color:var(--muted);font-size:0.95rem;font-weight:600}
+.form-control input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6e9ef;font-size:0.95rem;background:#fff;transition:box-shadow 160ms,border-color 160ms;color:#081029}
+.form-control input:focus{outline:none;box-shadow:0 6px 18px rgba(79,70,229,0.12);border-color:var(--primary)}
+
+/* placeholder mais escuro para melhor leitura */
+.form-control input::placeholder{color:#94a3b8;opacity:1}
+
+/* Select and date input styling to match text inputs */
+.form-control select{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6e9ef;font-size:0.95rem;background:#fff;appearance:none;cursor:pointer;transition:box-shadow 160ms,border-color 160ms;color:#081029}
+.form-control select:focus{outline:none;box-shadow:0 6px 18px rgba(79,70,229,0.08);border-color:var(--primary)}
+.form-control input[type="date"]{padding:9px 12px}
+
+/* small helper to indicate optional fields */
+.form-control label.optional::after{content: " (opcional)";font-weight:400;color:var(--muted);font-size:0.85rem;margin-left:6px}
+
+.btn{display:inline-block;background:linear-gradient(90deg,var(--primary),#7c3aed);color:white;border:0;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer;transition:transform 180ms, box-shadow 180ms}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(79,70,229,0.18)}
+
+/* Controls area */
+.controls .controls-row{display:flex;gap:12px;align-items:center}
+
+/* Icon button (used for delete) */
+.icon-btn{background:transparent;border:0;padding:6px;border-radius:6px;cursor:pointer}
+.icon-btn:hover svg{stroke:#ef4444}
+.icon-btn.trash svg{transition:stroke 160ms}
+
+.history-wrap{margin-top:10px}
+.list{list-style:none;padding:0;margin:0}
+.list li{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:10px;background:#fff;margin-bottom:10px;box-shadow:0 6px 16px rgba(2,6,23,0.04);transition:transform 140ms}
+.list li:hover{transform:translateY(-4px)}
+.list li .text{color:#041025;font-weight:600}
+.list li .amount{font-weight:700}
+
+.amount.positive{color:var(--success)}
+.amount.negative{color:var(--danger)}
+
+@media (max-width:720px){
+    .summary{gap:12px}
+    .card p{font-size:1.1rem}
+}
+
+@media (max-width:480px){
+    .container{padding:16px}
+    header h1{font-size:1.25rem}
+    .summary{flex-direction:column}
+}
+
+/* Dica: para centralizar verticalmente toda a página, descomente o bloco abaixo e ajuste o layout conforme necessário */
+/*
+body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+}
+*/
