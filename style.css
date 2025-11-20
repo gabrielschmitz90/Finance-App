@@ -172,9 +172,43 @@ header p{color:rgba(255,255,255,0.95);margin-top:6px;font-size:0.95rem}
 }
 
 @media (max-width:480px){
-    .container{padding:16px}
+    .container{
+        padding:12px;
+        width: calc(100% - 16px);
+        max-width: 100%;
+        margin: 12px auto;
+        border-radius:12px;
+    }
     header h1{font-size:1.25rem}
     .summary{flex-direction:column}
+    /* reduzir paddings internos nas camadas que adicionam margem extra no mobile */
+    .top-summary .container-inner, .top-controls .panel{padding:0 12px}
+    /* Corrige a parte inferior: empilha controles e evita estouro lateral */
+    .panel.controls-row{
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:stretch !important;
+        gap:8px !important;
+        justify-content:center !important;
+    }
+    .panel.controls-row .btn{width:100% !important}
+
+    /* Área de investimento/resgate: empilha e faz inputs/campos ocupar a largura disponível */
+    .invest-panel{
+        display:flex !important;
+        flex-direction:column !important;
+        gap:10px !important;
+        align-items:stretch !important;
+        justify-content:flex-start !important;
+        padding:12px !important;
+    }
+    .invest-panel > div{display:flex !important;flex-direction:row !important;gap:8px !important;align-items:center !important;justify-content:space-between !important;flex-wrap:wrap}
+    .invest-panel input{max-width:100% !important;width:100% !important;flex:1 1 auto !important;box-sizing:border-box}
+    .invest-panel button{flex:0 0 auto !important;min-width:120px}
+    .invest-panel #invest-info{margin-left:0 !important;margin-top:6px}
+
+    /* garantir que elementos inline não forcem scroll horizontal */
+    .container, .panel, .panel *{max-width:100%;overflow-wrap:break-word}
 }
 
 /* Dica: para centralizar verticalmente toda a página, descomente o bloco abaixo e ajuste o layout conforme necessário */
