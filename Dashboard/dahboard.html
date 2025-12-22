@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard - Finance App</title>
+  <link rel="stylesheet" href="../Timeline/style.css">
+  <style>
+    /* Dashboard-specific background override */
+    .container{
+      background: linear-gradient(180deg, rgba(6,10,20,0.96), rgba(10,14,26,0.96));
+      color: #e6eef8;
+      box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+    }
+    .container .panel{
+      background: rgba(255,255,255,0.03);
+      color: #e6eef8;
+      box-shadow: 0 10px 28px rgba(2,6,23,0.45);
+    }
+    .container .panel h3, header h1, header p{ color: #e6eef8; }
+    .btn{ box-shadow:none }
+
+    /* Dashboard Filters */
+    .dashboard-filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-group label {
+      color: #e6eef8;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .filter-group select, .filter-group input {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #e6eef8;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .filter-group select:focus, .filter-group input:focus {
+      outline: none;
+      border-color: #7c3aed;
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* Category Pills */
+    .category-filter-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 2px solid;
+      background: transparent;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 200ms ease;
+    }
+
+    .pill:hover, .pill.active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    }
+
+    .pill.active {
+      transform: scale(1.05);
+    }
+
+    /* Dashboard Cards - Summary */
+    .dashboard-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .summary-card h4 {
+      color: #a8e6fc;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-card .value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .summary-card .subtitle {
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .chart-panel {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .chart-panel h3 {
+      margin-bottom: 16px;
+      font-size: 1.1rem;
+      color: #e6eef8;
+    }
+
+    .chart-panel canvas {
+      width: 100% !important;
+      height: 320px !important;
+    }
+
+    /* Category Breakdown */
+    .category-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .category-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      border-left: 4px solid;
+    }
+
+    .category-item-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .category-color-box {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+    }
+
+    .category-item-text h4 {
+      color: #e6eef8;
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .category-item-text p {
+      color: #94a3b8;
+      margin: 4px 0 0 0;
+      font-size: 0.85rem;
+    }
+
+    .category-item-value {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .category-item-value .amount {
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .category-item-value .percentage {
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .stat-item {
+      background: rgba(255,255,255,0.05);
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .stat-item .label {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+
+    .stat-item .value {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-summary {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .dashboard-filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-group {
+        flex-direction: column;
+      }
+
+      .filter-group select, .filter-group input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Dinâmico -->
+  <div id="app-sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h3>Menu</h3>
+      <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Fechar menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <h4 class="nav-section-title">Ações Principais</h4>
+        <button class="nav-item" data-action="export-csv">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          Exportar CSV/Excel
+        </button>
+        <button class="nav-item" data-action="export-report">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <path d="M12 12h4"></path>
+            <path d="M12 16h4"></path>
+            <path d="M8 12h.01"></path>
+            <path d="M8 16h.01"></path>
+          </svg>
+          Relatório Avançado
+        </button>
+      </div>
+
+      <div class="nav-section">
+        <h4 class="nav-section-title">Navegação</h4>
+        <a href="../Timeline/index.html" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          Transações
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Botão flutuante para abrir sidebar -->
+  <button id="sidebar-open" class="sidebar-open" aria-label="Abrir menu" title="Abrir menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="8" y1="6" x2="21" y2="6"></line>
+      <line x1="8" y1="12" x2="21" y2="12"></line>
+      <line x1="8" y1="18" x2="21" y2="18"></line>
+      <line x1="3" y1="6" x2="3.01" y2="6"></line>
+      <line x1="3" y1="12" x2="3.01" y2="12"></line>
+      <line x1="3" y1="18" x2="3.01" y2="18"></line>
+    </svg>
+  </button>
+  
+  <header style="width:100%;max-width:1200px;margin:18px auto;text-align:center;">
+    <h1>📊 Dashboard Financeiro</h1>
+    <p style="color:var(--muted);margin-top:6px">Análise completa de suas finanças com filtros avançados</p>
+  </header>
+
+  <div class="container" style="max-width:1200px;">
+    
+    <!-- Filtros -->
+    <div class="dashboard-filters">
+      <div class="filter-group">
+        <label for="filter-period">Período:</label>
+        <select id="filter-period">
+          <option value="all">Todos os períodos</option>
+          <option value="current-month">Mês atual</option>
+          <option value="last-3-months">Últimos 3 meses</option>
+          <option value="last-6-months">Últimos 6 meses</option>
+          <option value="current-year">Ano atual</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filter-type">Tipo:</label>
+        <select id="filter-type">
+          <option value="all">Todos</option>
+          <option value="income">Apenas receitas</option>
+          <option value="expense">Apenas despesas</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filter-month">Mês específico:</label>
+        <input type="month" id="filter-month" />
+      </div>
+    </div>
+
+    <!-- Categorias como Pills -->
+    <div style="margin-bottom: 20px;">
+      <p style="color: #a8e6fc; font-weight: 600; margin-bottom: 10px; font-size: 0.9rem;">Filtrar por categoria:</p>
+      <div class="category-filter-pills" id="category-pills"></div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="dashboard-summary">
+      <div class="summary-card">
+        <h4>Receitas Totais</h4>
+        <div class="value" id="total-income-value">R$ 0,00</div>
+        <div class="subtitle" id="income-subtitle">últimos dados</div>
+      </div>
+      <div class="summary-card">
+        <h4>Despesas Totais</h4>
+        <div class="value" id="total-expenses-value">R$ 0,00</div>
+        <div class="subtitle" id="expenses-subtitle">últimos dados</div>
+      </div>
+      <div class="summary-card">
+        <h4>Saldo Líquido</h4>
+        <div class="value" id="total-balance-value">R$ 0,00</div>
+        <div class="subtitle" id="balance-subtitle">resultado geral</div>
+      </div>
+      <div class="summary-card">
+        <h4>Investido</h4>
+        <div class="value" id="total-invested-value">R$ 0,00</div>
+        <div class="subtitle" id="invested-subtitle">aplicações ativas</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-panel">
+        <h3>📊 Despesas por Categoria</h3>
+        <canvas id="category-chart"></canvas>
+      </div>
+
+      <div class="chart-panel">
+        <h3>📈 Evolução do Saldo</h3>
+        <canvas id="balance-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Category Breakdown -->
+    <div class="chart-panel">
+      <h3>🏷️ Detalhamento por Categoria</h3>
+      <div class="category-list" id="category-breakdown"></div>
+    </div>
+
+    <!-- Additional Stats -->
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="label">Transações Totais</div>
+        <div class="value" id="stat-total-transactions">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="label">Maior Despesa</div>
+        <div class="value" id="stat-max-expense">R$ 0,00</div>
+      </div>
+      <div class="stat-item">
+        <div class="label">Média de Despesas</div>
+        <div class="value" id="stat-avg-expense">R$ 0,00</div>
+      </div>
+      <div class="stat-item">
+        <div class="label">Dias Monitorado</div>
+        <div class="value" id="stat-days">0</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../Dashboard/dashboard.js"></script>
+</body>
+</html>

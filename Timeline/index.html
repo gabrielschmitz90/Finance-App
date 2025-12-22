@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance App - Seu Controle</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <!-- Sidebar Dinâmico -->
+    <div id="app-sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Fechar menu">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <h4 class="nav-section-title">Ações Principais</h4>
+                <button class="nav-item" data-action="export-csv">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    Exportar CSV/Excel
+                </button>
+                <button class="nav-item" data-action="export-report">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <path d="M12 12h4"></path>
+                        <path d="M12 16h4"></path>
+                        <path d="M8 12h.01"></path>
+                        <path d="M8 16h.01"></path>
+                    </svg>
+                    Relatório Avançado
+                </button>
+                <button class="nav-item" data-action="generate-qr">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    Gerar QR Code
+                </button>
+            </div>
+            
+            <div class="nav-section">
+                <h4 class="nav-section-title">Investimentos</h4>
+                <button class="nav-item" data-action="focus-invest">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <polyline points="19 12 12 19 5 12"></polyline>
+                    </svg>
+                    Investir
+                </button>
+                <button class="nav-item" data-action="focus-rescue">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <polyline points="5 12 12 5 19 12"></polyline>
+                    </svg>
+                    Resgatar Investimento
+                </button>
+            </div>
+
+            <div class="nav-section">
+                <h4 class="nav-section-title">Navegação</h4>
+                <a href="../Dashboard/dashboard.html" class="nav-item">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                    </svg>
+                    Dashboard
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Botão flutuante para abrir sidebar -->
+    <button id="sidebar-open" class="sidebar-open" aria-label="Abrir menu" title="Abrir menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+    </button>
+
+    <header>
+        <h1>Finance App</h1>
+        <p>Seu controle financeiro pessoal</p>
+    </header>
+
+    <!-- Theme toggle moved outside the header so it doesn't sit inside the title area -->
+    <button id="theme-toggle" aria-label="Alternar tema" title="Alternar tema" class="theme-toggle">
+        <span id="theme-icon" aria-hidden="true"></span>
+    </button>
+    <!-- container principal: todos os blocos organizados dentro -->
+    <div class="container">
+        <div class="panel" id="financial-health" aria-live="polite">
+            <!-- filled by script: status message and hint -->
+            <div class="health-content">
+                <strong>Saúde financeira:</strong>
+                <span id="health-message">Carregando...</span>
+            </div>
+        </div>
+
+        <div class="panel summary-panel">
+            <section class="summary">
+                <div class="card income">
+                    <h3>Receitas</h3>
+                    <p id="total-income">R$ 0,00</p>
+                </div>
+                <div class="card expense">
+                    <h3>Despesas</h3>
+                    <p id="total-expense">R$ 0,00</p>
+                </div>
+                <div class="card invested">
+                    <h3>Investido</h3>
+                    <p id="total-invested">R$ 0,00</p>
+                </div>
+                <div class="card balance">
+                    <h3>Saldo Atual</h3>
+                    <p id="current-balance">R$ 0,00</p>
+                </div>
+            </section>
+        </div>
+
+        <div class="panel">
+            <h2>Adicionar Nova Transação</h2>
+            <form id="transaction-form">
+                <div class="form-grid two-cols">
+                    <div class="form-control">
+                        <label for="text">Descrição:</label>
+                        <input type="text" id="text" placeholder="Ex: Salário, Aluguel" required>
+                    </div>
+
+                    <div class="form-control">
+                        <label for="amount">Valor: <br> (positivo para receita, negativo para despesa)</label>
+                        <input type="number" id="amount" placeholder="Ex: 3000 ou -150" step="0.01" required>
+                    </div>
+                </div>
+
+                <div class="form-grid two-cols">
+                    <div class="form-control">
+                        <label for="date-input">Data da Transação:</label>
+                        <input type="date" id="date-input" required>
+                    </div>
+
+                    <div class="form-control">
+                        <label for="category-select">Categoria:</label>
+                        <select id="category-select" required>
+                            <option value="" disabled selected>Selecione uma categoria</option>
+                            <option value="alimentacao">Alimentação</option>
+                            <option value="transporte">Transporte</option>
+                            <option value="moradia">Moradia</option>
+                            <option value="lazer">Lazer</option>
+                            <option value="saude">Saúde</option>
+                            <option value="Salario">Salario</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label for="payment-method">Tipo de Pagamento (opcional):</label>
+                    <select id="payment-method">
+                        <option value="" selected>—</option>
+                        <option value="cartao">Cartão de Crédito</option>
+                        <option value="dinheiro">Dinheiro</option>
+                        <option value="pix">PIX</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn">Adicionar</button>
+            </form>
+        </div>
+
+        <section class="history">
+            <h2>Histórico</h2>
+            <ul id="transaction-list" class="list">
+            </ul>
+        </section>
+
+        <!-- Export/QR controls moved to the sidebar -->
+        <div class="panel controls-row" style="justify-content:flex-start;gap:12px;">
+            <a id="dashboard-btn" class="btn" href="../Dashboard/dashboard.html">Dashboard</a>
+            <div id="qr-container" aria-hidden="true" style="display:inline-block;margin-left:12px;vertical-align:middle"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
