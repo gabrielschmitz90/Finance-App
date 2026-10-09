@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finance App - Seu Controle</title>
-    <link rel="stylesheet" href="./Timeline/style.css"> 
+    <link rel="stylesheet" href="./Timeline/style.css">
+    <link rel="stylesheet" href="./Timeline/invest.css">
 </head>
 <body>
 
@@ -49,9 +50,16 @@
                     Gerar QR Code
                 </button>
             </div>
-            
+
             <div class="nav-section">
                 <h4 class="nav-section-title">Investimentos</h4>
+                <button class="nav-item" data-action="open-panel">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                        <polyline points="16 7 22 7 22 13"></polyline>
+                    </svg>
+                    Painel de Investimentos
+                </button>
                 <button class="nav-item" data-action="focus-invest">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -100,14 +108,12 @@
         <p>Seu controle financeiro pessoal</p>
     </header>
 
-    <!-- Theme toggle moved outside the header so it doesn't sit inside the title area -->
     <button id="theme-toggle" aria-label="Alternar tema" title="Alternar tema" class="theme-toggle">
         <span id="theme-icon" aria-hidden="true"></span>
     </button>
-    <!-- container principal: todos os blocos organizados dentro -->
+
     <div class="container">
         <div class="panel" id="financial-health" aria-live="polite">
-            <!-- filled by script: status message and hint -->
             <div class="health-content">
                 <strong>Saúde financeira:</strong>
                 <span id="health-message">Carregando...</span>
@@ -191,10 +197,175 @@
             </ul>
         </section>
 
-        <!-- Export/QR controls moved to the sidebar -->
+        <!-- ===== Painel de Investimentos ===== -->
+        <div class="panel inv-panel" id="investments-panel">
+            <h2>Painel de Investimentos</h2>
+
+            <section class="inv-cards">
+                <div class="inv-card">
+                    <span class="inv-card-label">Total aplicado</span>
+                    <strong id="inv-applied">R$ 0,00</strong>
+                </div>
+                <div class="inv-card">
+                    <span class="inv-card-label">Total resgatado</span>
+                    <strong id="inv-rescued">R$ 0,00</strong>
+                </div>
+                <div class="inv-card inv-card--main">
+                    <span class="inv-card-label">Patrimônio investido</span>
+                    <strong id="inv-available">R$ 0,00</strong>
+                </div>
+                <div class="inv-card">
+                    <span class="inv-card-label">% da receita investida</span>
+                    <strong id="inv-rate">—</strong>
+                </div>
+            </section>
+
+            <!-- Meta -->
+            <section class="inv-goal">
+                <div class="inv-goal-head">
+                    <h3>Meta de investimento</h3>
+                    <form id="goal-form" class="inv-inline-form">
+                        <input type="number" id="goal-input" min="0" step="0.01" placeholder="Meta em R$ (0 remove)" aria-label="Meta de investimento">
+                        <button type="submit" class="btn">Salvar meta</button>
+                    </form>
+                </div>
+                <div class="inv-progress" aria-hidden="true"><div id="inv-progress-bar"></div></div>
+                <p id="inv-goal-text" class="inv-muted">Defina uma meta para acompanhar seu progresso.</p>
+            </section>
+
+            <!-- Aportar / Resgatar -->
+            <div class="inv-grid">
+                <form id="invest-form" class="inv-box" novalidate>
+                    <h3>Investir</h3>
+                    <p class="inv-muted" id="inv-balance-hint">Saldo em conta: R$ 0,00</p>
+                    <div class="form-control">
+                        <label for="inv-amount">Valor:</label>
+                        <input type="number" id="inv-amount" min="0.01" step="0.01" placeholder="Ex: 500" required>
+                    </div>
+                    <div class="form-grid two-cols">
+                        <div class="form-control">
+                            <label for="inv-type">Tipo:</label>
+                            <select id="inv-type"></select>
+                        </div>
+                        <div class="form-control">
+                            <label for="inv-date">Data:</label>
+                            <input type="date" id="inv-date" required>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="inv-desc">Descrição (opcional):</label>
+                        <input type="text" id="inv-desc" placeholder="Ex: CDB 110% CDI">
+                    </div>
+                    <button type="submit" class="btn">Investir</button>
+                </form>
+
+                <form id="rescue-form" class="inv-box" novalidate>
+                    <h3>Resgatar</h3>
+                    <p class="inv-muted" id="res-hint">Disponível para resgate: R$ 0,00</p>
+                    <div class="form-control">
+                        <label for="res-type">De qual tipo:</label>
+                        <select id="res-type"></select>
+                    </div>
+                    <div class="form-grid two-cols">
+                        <div class="form-control">
+                            <label for="res-amount">Valor:</label>
+                            <input type="number" id="res-amount" min="0.01" step="0.01" placeholder="Ex: 200" required>
+                        </div>
+                        <div class="form-control">
+                            <label for="res-date">Data:</label>
+                            <input type="date" id="res-date" required>
+                        </div>
+                    </div>
+                    <div class="inv-btn-row">
+                        <button type="submit" class="btn" id="res-submit">Resgatar</button>
+                        <button type="button" class="btn btn-ghost" id="res-all">Resgatar tudo deste tipo</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="inv-grid">
+                <div class="inv-box">
+                    <h3>Distribuição por tipo</h3>
+                    <div class="inv-chart-box">
+                        <canvas id="inv-alloc-chart"></canvas>
+                        <p class="inv-empty" id="inv-alloc-empty" hidden>Sem investimentos para exibir.</p>
+                    </div>
+                </div>
+                <div class="inv-box">
+                    <h3>Evolução do patrimônio investido</h3>
+                    <div class="inv-chart-box">
+                        <canvas id="inv-evol-chart"></canvas>
+                        <p class="inv-empty" id="inv-evol-empty" hidden>Sem movimentações para exibir.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumo por tipo -->
+            <h3 class="inv-subtitle">Resumo por tipo</h3>
+            <div class="inv-table-wrap">
+                <table class="inv-table">
+                    <thead>
+                        <tr><th>Tipo</th><th>Aplicado</th><th>Resgatado</th><th>Disponível</th><th>% da carteira</th></tr>
+                    </thead>
+                    <tbody id="inv-table-body"></tbody>
+                </table>
+            </div>
+
+            <!-- Movimentações -->
+            <h3 class="inv-subtitle">Movimentações</h3>
+            <ul id="inv-list" class="list"></ul>
+        </div>
+
         <div class="panel controls-row" style="justify-content:flex-start;gap:12px;">
             <a id="dashboard-btn" class="btn" href="../Dashboard/dashboard.html">Dashboard</a>
             <div id="qr-container" aria-hidden="true" style="display:inline-block;margin-left:12px;vertical-align:middle"></div>
+        </div>
+    </div>
+
+    <!-- ===== Modal de edição ===== -->
+    <div id="edit-overlay" class="modal-overlay" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+            <h3 id="edit-title">Editar transação</h3>
+            <form id="edit-form" novalidate>
+                <div class="form-control">
+                    <label for="edit-text">Descrição:</label>
+                    <input type="text" id="edit-text" required>
+                </div>
+                <div class="form-grid two-cols">
+                    <div class="form-control">
+                        <label for="edit-amount" id="edit-amount-label">Valor:</label>
+                        <input type="number" id="edit-amount" step="0.01" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="edit-date">Data:</label>
+                        <input type="date" id="edit-date" required>
+                    </div>
+                </div>
+                <div class="form-grid two-cols" id="edit-regular-fields">
+                    <div class="form-control">
+                        <label for="edit-category">Categoria:</label>
+                        <select id="edit-category"></select>
+                    </div>
+                    <div class="form-control">
+                        <label for="edit-payment">Pagamento (opcional):</label>
+                        <select id="edit-payment">
+                            <option value="">—</option>
+                            <option value="cartao">Cartão de Crédito</option>
+                            <option value="dinheiro">Dinheiro</option>
+                            <option value="pix">PIX</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-control" id="edit-asset-field" hidden>
+                    <label for="edit-asset">Tipo de investimento:</label>
+                    <select id="edit-asset"></select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-ghost" id="edit-cancel">Cancelar</button>
+                    <button type="submit" class="btn">Salvar</button>
+                </div>
+            </form>
         </div>
     </div>
 

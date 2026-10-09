@@ -1,0 +1,85 @@
+/* invest.css — estilos do painel de investimentos, botão de editar e modal.
+   Carregar DEPOIS de style.css. */
+
+[hidden]{ display:none !important; }
+
+/* ---------- Histórico: ações por item ---------- */
+.list li .tx-actions{ display:flex; align-items:center; gap:2px; margin-left:8px; flex-shrink:0 }
+.list li .amount{ margin-left:auto; padding-left:12px; white-space:nowrap }
+.list li .text small{ display:block; font-size:0.85rem; color:var(--muted); font-weight:400 }
+.icon-btn.edit svg{ transition:stroke 160ms }
+.icon-btn.edit:hover svg{ stroke:var(--primary) }
+.icon-btn:focus-visible{ outline:2px solid var(--primary); outline-offset:2px }
+.badge{ display:inline-block; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:999px; background:rgba(79,70,229,0.1); color:var(--primary); margin-left:6px; vertical-align:middle }
+.badge.rescue{ background:rgba(22,163,74,0.12); color:var(--success) }
+
+/* ---------- Botões ---------- */
+.btn.btn-ghost{ background:#e5e7eb; color:#111827 }
+.btn.btn-ghost:hover{ box-shadow:0 10px 30px rgba(2,6,23,0.12) }
+.btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none }
+
+/* ---------- Painel de investimentos ---------- */
+.inv-panel{ margin-top:20px }
+.inv-panel h3{ font-size:1rem; margin:0 0 8px 0 }
+.inv-subtitle{ margin:22px 0 10px 0 !important }
+.inv-muted{ color:var(--muted); font-size:0.9rem; margin-bottom:8px }
+
+.inv-cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px }
+.inv-card{ background:linear-gradient(180deg,#ffffff,#f8fbff); border:1px solid #e6e9ef; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:6px }
+.inv-card-label{ font-size:0.85rem; color:var(--muted); font-weight:600 }
+.inv-card strong{ font-size:1.2rem; color:#081029 }
+.inv-card--main{ border-left:6px solid var(--primary) }
+.inv-card--main strong{ color:var(--primary) }
+
+.inv-goal{ background:#fff; border:1px solid #e6e9ef; border-radius:12px; padding:14px; margin-bottom:18px }
+.inv-goal-head{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px }
+.inv-goal-head h3{ margin:0 }
+.inv-inline-form{ display:flex; gap:8px; flex-wrap:wrap }
+.inv-inline-form input{ padding:9px 12px; border-radius:8px; border:1px solid #e6e9ef; font-size:0.95rem; width:210px; color:#081029; background:#fff }
+.inv-inline-form input:focus{ outline:none; border-color:var(--primary); box-shadow:0 6px 18px rgba(79,70,229,0.12) }
+.inv-progress{ height:12px; background:#eef2ff; border-radius:999px; overflow:hidden }
+#inv-progress-bar{ height:100%; width:0; background:linear-gradient(90deg,var(--primary),#7c3aed); border-radius:999px; transition:width 400ms ease }
+#inv-progress-bar.done{ background:linear-gradient(90deg,#16a34a,#10b981) }
+.inv-goal .inv-muted{ margin:8px 0 0 0 }
+
+.inv-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:18px; align-items:start }
+.inv-box{ background:#fff; border:1px solid #e6e9ef; border-radius:12px; padding:16px }
+.inv-box .form-control input,
+.inv-box .form-control select{ background:#fff }
+.inv-btn-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px }
+.inv-box > .btn{ margin-top:10px }
+
+.inv-chart-box{ position:relative; height:260px }
+.inv-empty{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--muted); font-size:0.95rem }
+
+.inv-table-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch }
+.inv-table{ width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; font-size:0.95rem }
+.inv-table th, .inv-table td{ padding:10px 12px; text-align:right; border-bottom:1px solid #eef0f5; white-space:nowrap; color:#081029 }
+.inv-table th:first-child, .inv-table td:first-child{ text-align:left }
+.inv-table th{ background:#f5f7fb; font-size:0.85rem; color:var(--muted); font-weight:700 }
+.inv-table tbody tr:last-child td{ border-bottom:0 }
+.inv-table tfoot td{ font-weight:700; background:#f8fbff }
+.inv-table .empty-row td{ text-align:center; color:var(--muted) }
+
+/* ---------- Modal de edição ---------- */
+.modal-overlay{ position:fixed; inset:0; background:rgba(2,6,23,0.55); z-index:200000; display:flex; align-items:center; justify-content:center; padding:16px }
+.modal{ width:min(560px,100%); max-height:92vh; overflow:auto; background:#fff; border-radius:14px; padding:22px; box-shadow:0 20px 60px rgba(2,6,23,0.4); color:#081029 }
+.modal h3{ margin:0 0 10px 0; font-size:1.1rem }
+.modal .form-control input, .modal .form-control select{ background:#fff }
+.modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:16px }
+
+/* ---------- Responsivo ---------- */
+@media (max-width:900px){
+    .inv-cards{ grid-template-columns:1fr 1fr }
+}
+@media (max-width:768px){
+    .inv-grid{ grid-template-columns:1fr }
+}
+@media (max-width:480px){
+    .inv-cards{ grid-template-columns:1fr }
+    .inv-inline-form{ width:100% }
+    .inv-inline-form input{ flex:1 1 100%; width:100% }
+    .inv-btn-row .btn, .modal-actions .btn{ flex:1 1 auto }
+    .list li{ flex-wrap:wrap }
+    .list li .tx-actions{ margin-left:auto }
+}
